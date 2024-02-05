@@ -18,12 +18,13 @@ import LockIcon from '../../components/svg/LockIcon';
 import ShowIcon from '../../components/svg/ShowIcon';
 import LoginButton from '../../components/Buttons/LoginButton';
 import GoogleSvg from '../../components/svg/GoogleSvg';
-import { getUserByEmail, loginUser } from '../../redux/actions/authActions';
+// import { getUserByEmail, loginUser } from '../../redux/actions/authActions';
 import isEmpty from '../../utils/isEmpty';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import { Button } from 'react-native-paper';
 const screenHeight = Dimensions.get('window').height;
 const initialValues = {
   email: '',
@@ -121,7 +122,7 @@ const LoginScreen = () => {
 
   // ------------------End theme-----------------------
 
-  showPasswordHandler = navigation => {
+  const showPasswordHandler = navigation => {
     setshow(!show);
     Animated.timing(lineAnimation, {
       toValue: show ? 0 : 20,
@@ -139,8 +140,8 @@ const LoginScreen = () => {
     setisLoading(true)
     console.log(values);
     // console.log(formikActions);
-    dispatch(loginUser(values))
-    dispatch(loginUser(values))
+    // dispatch(loginUser(values))
+    // dispatch(loginUser(values))
     // dispatch(GetProfile())
     // dispatch(GetRequest())
     // console.log("eeeeeee:", error)
@@ -180,7 +181,7 @@ const LoginScreen = () => {
          try {
           await GoogleSignin.hasPlayServices();
           const info = await GoogleSignin.signIn();
-          dispatch(getUserByEmail(info, navigation))
+          // dispatch(getUserByEmail(info, navigation))
 
 
 
@@ -211,7 +212,7 @@ const LoginScreen = () => {
     }
     style={{
       flex: 1,
-      // backgroundColor: '#B52424', // Fallback color in case the image fails to load
+      backgroundColor: '#f1f1ec', // Fallback color in case the image fails to load
     }}
     resizeMode="cover"
   >
@@ -226,7 +227,7 @@ const LoginScreen = () => {
       >
 
     <KeyboardAwareScrollView behavior="position" style={LoginStyle.mainCon}>
-      <View style={LoginStyle.loginIcon}>
+      <View style={[LoginStyle.loginIcon, {margin:20}]}>
         {/* <LoginSVG
         style={{
           top: 50,
@@ -236,8 +237,8 @@ const LoginScreen = () => {
         fill2={ themeValue ? '#eb6352' : '#000000'}
         width={windowWidth * 0.8} height={windowHeight * 0.25} /> */}
         <Logo
-                    width={Dimensions.get('window').width*0.6}
-                    height={Dimensions.get('window').height*0.4}
+                    width={Dimensions.get('window').width*0.5}
+                    height={Dimensions.get('window').height*0.3}
                     />
       </View>
 
@@ -247,22 +248,29 @@ const LoginScreen = () => {
         onSubmit={handleLogin}
         >
         <View style={LoginStyle.container}>
-          <View style={LoginStyle.loginLblCon}>
-            <Text style={[LoginStyle.loginLbl,{
-              zIndex:70000,
-              position:'relative'
-            }]}>Login</Text>
-          </View>
+
           <View style={LoginStyle.formCon}>
             <View style={LoginStyle.textBoxCon}>
-              <View style={LoginStyle.at}>
-                <AtSVG width={20} height={20} />
-              </View>
+              {/* <View style={LoginStyle.at}> */}
+                {/* <AtSVG width={20} height={20} /> */}
+              {/* </View> */}
               <View style={LoginStyle.textCon}>
+              <Text
+              style={{
+                color: "#1E293B",
+                fontFamily: Fonts.type.NotoSansMedium,
+                fontSize: 18,
+                marginLeft:8,
+
+              }}
+              >
+                E-mail
+              </Text>
                 <AppInput
                   name="email"
                   placeholder="Email ID"
                   style={LoginStyle.textInput}
+
 
                   placeholderTextColor={'#aaa'}
                   />
@@ -270,11 +278,20 @@ const LoginScreen = () => {
             </View>
 
             <View style={[LoginStyle.textBoxCon, {marginTop: 30}]}>
-              <View style={LoginStyle.at}>
-                <LockIcon width={20} height={20} />
-              </View>
+
               <View style={[LoginStyle.passCon]}>
                 <View style={LoginStyle.textCon}>
+                <Text
+                style={{
+                color: "#1E293B",
+                fontFamily: Fonts.type.NotoSansMedium,
+                fontSize: 18,
+                marginLeft:8,
+
+              }}
+              >
+                Password
+              </Text>
                   <AppInput
                     name="password"
                     placeholder="Password"
@@ -306,42 +323,65 @@ const LoginScreen = () => {
 
             <View style={LoginStyle.forgotAction}>
   <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
-    <Text style={LoginStyle.forgotLbl}>Forgot Password?</Text>
+    <Text style={LoginStyle.forgotLbl}>Forgot Your Password</Text>
   </Pressable>
 
 </View>
           </View>
           <View style={LoginStyle.loginCon}>
             <LoginButton
-              style={LoginStyle.LoginBtn}
+              style={[LoginStyle.LoginBtn, {
+                backgroundColor: "#023AE9",
+                borderColor: Colors["light"]?.primary,
+                borderRadius: 8,
+
+
+              }]}
               loginBtnLbl={LoginStyle.loginBtnLbl}
               btnName={"Login"}
               />
-              <Pressable
+              <Button
+              onPress={ onPressSimpleUser}
+              style={{backgroundColor: 'white',
+              borderColor: '#708090',
+              borderWidth: 0.5,
+              borderRadius: 8,
+              }}
+              >
+                <Text style={{color: "#000000"}}>Create an account</Text>
+              </Button>
+
+              {/* <Pressable
               onPress={() => {
                 onPressSimpleUser()
                 console.log("don't")}}
               >
 
               <Text style={LoginStyle.dontHaveAccountLbl}>Don't have an account yet?</Text>
-              </Pressable>
+              </Pressable> */}
           </View>
-          {/* <View style={LoginStyle.deviderCon}>
+          <View style={LoginStyle.deviderCon}>
             <View style={LoginStyle.devider} />
-            <Text style={LoginStyle.or}>OR</Text>
+            <Text style={LoginStyle.or}>Or login with</Text>
           </View>
-          <View style={LoginStyle.googleIconCon}>
-            <View style={LoginStyle.googleIcon}>
-              <GoogleSvg width={20} height={20} />
-            </View>
-            <View style={LoginStyle.googleLblCon}>
-              <Pressable
-              onPress={handleGoogleLogin}
-              >
-                <Text style={LoginStyle.googleLbl}>Login with Google</Text>
-              </Pressable>
-            </View>
-          </View> */}
+          <View style={LoginStyle.socialButtonsContainer}>
+  <View style={LoginStyle.socialButton}>
+    <GoogleSvg width={20} height={20} />
+    <Pressable onPress={handleGoogleLogin}>
+      <Text style={LoginStyle.socialButtonLabel}> Google</Text>
+    </Pressable>
+  </View>
+
+  <View style={LoginStyle.socialButton}>
+    {/* <FacebookSvg width={20} height={20} /> */}
+    <Pressable
+    // onPress={handleFacebookLogin}
+    >
+      <Text style={LoginStyle.socialButtonLabel}>Facebook</Text>
+    </Pressable>
+  </View>
+</View>
+
           <View style={LoginStyle.registerCon}>
             {/* <Text style={LoginStyle.registerNew}>New User? </Text> */}
             {/* <Pressable
@@ -370,7 +410,16 @@ const LoginScreen = () => {
             </Pressable> */}
 
 
-
+            <Text
+  style={{
+    textAlign: 'center',
+    fontSize: 12,
+    color: "black",
+    fontFamily: Fonts.type.NotoSans,
+    marginTop: 20,
+    marginBottom: 50,
+  }}
+>Version 1.1</Text>
           </View>
         </View>
       </CostomFormik>
@@ -389,16 +438,7 @@ const LoginScreen = () => {
     <Text style={LoginStyle.cardButtonText}>See the calendar</Text>
   </TouchableOpacity>
 </View> */}
-<Text
-  style={{
-    textAlign: 'center',
-    fontSize: 12,
-    color: "black",
-    fontFamily: Fonts.type.NotoSans,
-    marginTop: 20,
-    marginBottom: 50,
-  }}
->Version 1.1</Text>
+
 </GestureHandlerRootView >
 
     </>
@@ -412,7 +452,7 @@ const styling = theme=>
 StyleSheet.create({
   mainCon: {
     // backgroundColor: theme.colors.black,
-    // backgroundColor: Colors[theme]?.backgroundColor,
+    // backgroundColor: Colors["light"]?.backgroundColor,
 // backgroundColor: process.env.ICON_COLOR,
     flex: 1,
     height:screenHeight*1.5
@@ -435,8 +475,32 @@ StyleSheet.create({
     position: 'relative',
     bottom: 40,
   },
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 10, // Add some margin if needed
+    marginTop: 10, // Adjust as needed
+  },
+  socialButton: {
+    flexDirection: 'row',
+    backgroundColor: "white",
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 8,
+    paddingHorizontal: 30, // Adjust the padding as needed
+    borderWidth:0.5,
+    borderColor: "#708090",
+    height: 45,
+  },
+  socialButtonLabel: {
+    color: Colors["light"]?.black,
+    textAlign: 'center',
+    paddingHorizontal: 10, // Adjust the padding as needed
+    fontFamily: Fonts.type.NotoSansBlack,
+  },
+
   loginLbl: {
-    color: Colors[theme]?.black,
+    color: Colors["light"]?.black,
     fontSize: 32,
     fontFamily: Fonts.type.NotoSansExtraBold,
   },
@@ -448,30 +512,39 @@ StyleSheet.create({
     alignSelf: 'center',
     width: '10%',
     position: 'relative',
-    right: 20,
+    right: 30,
     zIndex: 10,
+    top:17,
+    // color:"#f1f1ec"
+
   },
   textBoxCon: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   textCon: {
-    width: '90%',
+    width: Dimensions.get("screen").width*0.9,
   },
   passCon: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   textInput: {
-    borderBottomColor: Colors[theme]?.gray,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    color: Colors[theme]?.black,
+    borderBottomColor: Colors["light"]?.gray,
+    borderWidth: 0.5,
+    // borderTopWidth: 0,
+    // borderLeftWidth: 0,
+    // borderRightWidth: 0,
+    color: Colors["light"]?.black,
     fontSize: 16,
     fontFamily: Fonts.type.NotoSansMedium,
     height: 40,
+    borderRadius: 8,
+    backgroundColor:"#ffffff",
+    paddingHorizontal: 10,
+    marginTop:10
+
+    // backgroundColor: "#ffffff",
   },
   forgotAction: {
     paddingVertical: 20,
@@ -484,57 +557,60 @@ StyleSheet.create({
   registerCon: {flexDirection: 'row',
   padding:15,
    justifyContent: 'center', paddingTop: 10},
-  registerLbl: {color: Colors[theme]?.primary, fontFamily: Fonts.type.NotoSansSemiBold},
+  registerLbl: {color: Colors["light"]?.primary, fontFamily: Fonts.type.NotoSansSemiBold},
   registerNew: {
-    color: Colors[theme]?.gray,
+    color: Colors["light"]?.gray,
     fontFamily: Fonts.type.NotoSansSemiBold,
   },
   forgotLbl: {
-    color:"#26cbfc" ,
+    color:"#000000" ,
     textAlign: 'right',
     fontFamily: Fonts.type.NotoSansSemiBold,
+    textDecorationStyle: "solid",
+    textDecorationLine: "underline",
+
   },
   LoginBtn: {
-    backgroundColor: "#1b394a",
+    backgroundColor: "#023AE9",
     borderRadius: 20,
-    shadowColor: Colors[theme]?.black,
+    shadowColor: Colors["light"]?.black,
     borderColor: 'transparent',
   },
   loginBtnLbl: {
     textAlign: 'center',
     fontSize: 16,
     fontFamily: Fonts.type.NotoSansBlack,
-    color: Colors[theme]?.white,
+    color: Colors["light"]?.white,
     paddingVertical: 10,
   },
   devider: {
-    borderBottomColor: Colors[theme]?.gray,
+    borderBottomColor: Colors["light"]?.gray,
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginTop: 20,
   },
   or: {
-    color: Colors[theme]?.gray,
+    color: Colors["light"]?.gray,
     textAlign: 'center',
-    backgroundColor: Colors[theme]?.backgroundColor,
-    width: 60,
+    backgroundColor: "#ffffff",
+    width: 100,
     alignSelf: 'center',
     fontFamily: Fonts.type.NotoSansSemiBold,
     position: 'relative',
-    bottom: 13,
+    bottom: 10,
   },
   deviderCon: {
     paddingVertical: 10,
   },
   googleIconCon: {
     flexDirection: 'row',
-    backgroundColor: Colors[theme]?.gray2,
+    backgroundColor: Colors["light"]?.gray2,
     justifyContent: 'center',
     paddingVertical: 15,
     borderRadius: 20,
     paddingHorizontal: 30,
   },
   googleLbl: {
-    color: Colors[theme]?.black,
+    color: Colors["light"]?.black,
     textAlign: 'center',
     paddingHorizontal: 30,
     fontFamily: Fonts.type.NotoSansBlack,
@@ -561,10 +637,10 @@ StyleSheet.create({
 // paddingVertical:40,
 height:screenHeight,
 padding: 20,
-backgroundColor: Colors[theme]?.backgroundColor,
+backgroundColor: Colors["light"]?.backgroundColor,
 
 borderRadius: 10,
-shadowColor: Colors[theme]?.black,
+shadowColor: Colors["light"]?.black,
 shadowOffset: { width: 6, height: 6 },
 shadowOpacity: 0.1,
 shadowRadius: 11,
@@ -591,7 +667,7 @@ paddingHorizontal: 8,
 flexGrow: 1,
 },
 blockMenuLink: {
-  backgroundColor: Colors[theme]?.white,
+  backgroundColor: Colors["light"]?.white,
   // backgroundColor: ,
 borderRadius: 10,
 borderWidth: 1.5,
@@ -609,9 +685,9 @@ textAlign: 'center',
 card: {
 padding: 20,
 marginVertical: 50,
-backgroundColor: Colors[theme]?.white,
+backgroundColor: Colors["light"]?.white,
 borderRadius: 10,
-shadowColor: Colors[theme]?.black,
+shadowColor: Colors["light"]?.black,
 shadowOffset: {
 width: 6,
 height: 6,
@@ -623,7 +699,7 @@ marginBottom: 20,
 cardHeader: {
 fontSize: 18,
 fontFamily: 'Aller-Regular',
-color: Colors[theme]?.black,
+color: Colors["light"]?.black,
 marginBottom: 10,
 
 },
@@ -633,23 +709,23 @@ fontFamily: 'Aller-Bold',
 cardTitle: {
 fontSize: 22,
 fontFamily: 'Aller-Bold',
-color: Colors[theme]?.primary,
+color: Colors["light"]?.primary,
 marginBottom: 10,
 },
 cardLocation: {
 fontSize: 16,
 fontFamily: 'Aller-Regular',
-color: Colors[theme]?.gray,
+color: Colors["light"]?.gray,
 marginBottom: 10,
 },
 cardButton: {
-backgroundColor: Colors[theme]?.primary,
+backgroundColor: Colors["light"]?.primary,
 borderRadius: 10,
 paddingVertical: 10,
 paddingHorizontal: 20,
 },
 cardButtonText: {
-color: Colors[theme]?.white,
+color: Colors["light"]?.white,
 fontSize: 16,
 fontFamily: 'Aller-Bold',
 textAlign: 'center',

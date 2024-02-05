@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {Component, useState, useRef, useEffect, useCallback} from 'react';
 import {
   Text,
@@ -51,7 +52,7 @@ import Logo from '../../components/svg/LOGO';
 import LockIcon from '../../components/svg/LockIcon';
 import ShowIcon from '../../components/svg/ShowIcon';
 import LoginButton from '../../components/Buttons/LoginButton';
-import { registerUser } from '../../redux/actions/authActions';
+// import { registerUser } from '../../redux/actions/authActions';
 import { Button } from 'react-native-paper';
 import { ImageBackground } from 'react-native';
 const SignUpScreen = () => {
@@ -151,7 +152,7 @@ const SignUpScreen = () => {
     console.log(values)
     // dispatch(formikActions.signUp(email, password, confirm, name));
     // console.log(formikActions.signUp(email, password, confirm, name))
-    dispatch(registerUser({...values, firstLogin:false}, navigation))
+    // dispatch(registerUser({...values, firstLogin:false}, navigation))
     setTimeout(() => {
 
 

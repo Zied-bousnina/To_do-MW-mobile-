@@ -26,10 +26,10 @@ import * as yup from 'yup';
 import LoginButton from '../../components/Buttons/LoginButton';
 // import styles from '../../assets/styles/styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { get, save } from '../../Storage';
+import { get, save } from '../../utils/Storage';
 import { Colors } from '../../theme';
 import { useDispatch, useSelector } from 'react-redux';
-import { forgotPassword } from '../../redux/actions/authActions';
+// import { forgotPassword } from '../../redux/actions/authActions';
 import DropdownAlert from 'react-native-dropdownalert';
 import AppLoader from '../../components/Animations/AppLoader';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -46,10 +46,13 @@ const validationSchema = yup.object({
     email: '',
   }
 const ForgotPasswordScreen = () => {
-    const isLoad = useSelector(state=>state?.isLoading?.isLoading)
+    const isLoad = false
+    // useSelector(state=>state?.isLoading?.isLoading)
     const navigation = useNavigation()
     const dispatch = useDispatch()
-    const state = useSelector(state=>state)
+    const state = {}
+
+    // useSelector(state=>state)
     // console.log("---------------------------------------------------------------------",state.mail.emailSent)
     const dropdown = useRef(null);
     const showAlert = () => {
@@ -61,7 +64,7 @@ const ForgotPasswordScreen = () => {
     // Alert.alert("email was sent")
     console.log(values);
     console.log(formikActions);
-    dispatch(forgotPassword(values.email))
+    // dispatch(forgotPassword(values.email))
     setmail(values.email)
 
 
