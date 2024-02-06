@@ -146,8 +146,8 @@ const ForgotPasswordScreen = () => {
 
     source={
         require('../../assets/images1/pattern-randomized.png')
-        // require('../../assets')
     }
+        // require('../../assets')
     style={{
       flex: 1,
       // backgroundColor: '#B52424', // Fallback color in case the image fails to load
@@ -271,7 +271,7 @@ export default ForgotPasswordScreen
 const styling = theme=>
 StyleSheet.create({
   mainCon: {
-    // backgroundColor: Colors[theme]?.backgroundColor,
+    // backgroundColor: Colors["light"]?.backgroundColor,
     flex: 1,
   },
   loginIcon: {
@@ -289,7 +289,7 @@ StyleSheet.create({
     bottom: 40,
   },
   loginLbl: {
-    color: Colors[theme]?.black,
+    color: Colors["light"]?.black,
     fontSize: 40,
     fontFamily: Fonts.type.NotoSansExtraBold,
   },
@@ -307,12 +307,12 @@ StyleSheet.create({
   },
 
   textInput: {
-    borderBottomColor: Colors[theme]?.gray,
+    borderBottomColor: Colors["light"]?.gray,
     borderWidth: 1,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    color: Colors[theme]?.black,
+    color: Colors["light"]?.black,
     fontSize: 16,
     fontFamily: Fonts.type.NotoSansMedium,
     height: 40,
@@ -321,13 +321,13 @@ StyleSheet.create({
   LoginBtn: {
     backgroundColor:"#1b394a",
     borderRadius: 20,
-    shadowColor: Colors[theme]?.black,
+    shadowColor: Colors["light"]?.black,
   },
   loginBtnLbl: {
     textAlign: 'center',
     fontSize: 16,
     fontFamily: Fonts.type.NotoSansBlack,
-    color: Colors[theme]?.white,
+    color: Colors["light"]?.white,
     paddingVertical: 10,
   },
 
@@ -336,7 +336,7 @@ StyleSheet.create({
     bottom: 35,
   },
   forgotDesLbl: {
-    color: Colors[theme]?.black,
+    color: Colors["light"]?.black,
     fontFamily: Fonts.type.NotoSansRegular,
   },
 });

@@ -1,27 +1,20 @@
 /* eslint-disable prettier/prettier */
-import React, {Component, useState, useRef, useEffect, useCallback} from 'react';
-import {
-  Text,
-  View,
-  Pressable,
-  Dimensions,
-  useColorScheme,
-  StyleSheet,
-
-} from 'react-native';
+import { View, Text, Animated, useColorScheme, Dimensions, Pressable, StyleSheet } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { get, save } from '../../utils/Storage';
-import { Colors } from '../../theme';
-import CostomFormik from '../../components/costomFormik/CostomFormik';
-import AppInput from '../../components/Inputs/AppInput';
-import * as yup from 'yup'
-import { Animated } from 'react-native';
-import AtSVG from '../../components/svg/AtSVG';
-import UserSVg from '../../components/svg/UserSVg';
 import { useNavigation } from '@react-navigation/native';
-import Fonts from '../../assets/fonts';
-import AppLoader from '../../components/Animations/AppLoader';
-
+import { get, save } from '../utils/Storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import CostomFormik from './costomFormik/CostomFormik';
+import * as yup from 'yup'
+import AtSVG from './svg/AtSVG';
+import AppInput from './Inputs/AppInput';
+import UserSVg from './svg/UserSVg';
+import LockIcon from './svg/LockIcon';
+import ShowIcon from './svg/ShowIcon';
+import LoginButton from './Buttons/LoginButton';
+import Fonts from '../assets/fonts';
+import { Colors } from '../theme';
 
 const screenHeight = Dimensions.get('window').height;
 const initialValues = {
@@ -46,17 +39,7 @@ const initialValues = {
     .oneOf([yup.ref('password'), null], 'Passwords must match')
   });
 const AnimatedLine = Animated.createAnimatedComponent(View);
-
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
-import Logo from '../../components/svg/LOGO';
-import LockIcon from '../../components/svg/LockIcon';
-import ShowIcon from '../../components/svg/ShowIcon';
-import LoginButton from '../../components/Buttons/LoginButton';
-// import { registerUser } from '../../redux/actions/authActions';
-import { Button } from 'react-native-paper';
-import { ImageBackground } from 'react-native';
-const SignUpScreen = () => {
-
+const AddtodoForm = () => {
     const [show, setshow] = useState(false);
     const lineAnimation = useRef(new Animated.Value(0)).current;
     const dispatch = useDispatch();
@@ -171,55 +154,9 @@ const SignUpScreen = () => {
   }
 
   return (
-    <ImageBackground
-
-    // source={
-    //     require('../../assets/images1/pattern-randomized.png')
-    // }
-        // require('../../assets')
-    style={{
-      flex: 1,
-      // backgroundColor: '#B52424', // Fallback color in case the image fails to load
-    }}
-    resizeMode="cover"
-  >
+    <KeyboardAwareScrollView behavior="position" style={SignUpStyle.mainCon}>
 
 
-<>
-    {isLoad? <AppLoader/> : null }
-     {isLoading? <AppLoader /> : null}
-     {/* <AppLoader /> */}
-     {/* <GestureHandlerRootView
-     style={{
-       backgroundColor: "#fff"
-     }}
-     > */}
-     {/* <ActivityIndicator size="large" color="#00ff00" /> */}
-
-
-     <KeyboardAwareScrollView behavior="position" style={SignUpStyle.mainCon}>
-     <View style={{padding: 20}}>
-
-
-          <Button
-          mode='contained'
-          onPress={()=>navigation.goBack()}
-          icon="keyboard-return"
-          style={{ borderRadius: 20, width: 50, height: 50, justifyContent: 'center', alignItems: 'center'}}
-
-          >
-            {/* <SvgIcon icon={'back'} width={30} height={30} /> */}
-
-          </Button>
-        </View>
-         <View style={SignUpStyle.loginIcon}>
-           {/* <SvgIcon icon={'signup'} width={300} height={300} /> */}
-           <Logo
-                     width={Dimensions.get('window').width*0.6}
-                     height={Dimensions.get('window').height*0.3}
-                     />
-
-         </View>
          <CostomFormik
            initialValues={initialValues}
            validationSchema={validationSchema}
@@ -357,31 +294,20 @@ const SignUpScreen = () => {
              />
            </View>
 
-           <View style={SignUpStyle.registerCon}>
-             <Text style={SignUpStyle.registerNew}>Joined us before? </Text>
-             <Pressable
-               onPress={() => navigation.navigate('Login')}
-               >
-               <Text style={SignUpStyle.registerLbl}>Login</Text>
-             </Pressable>
 
-           </View>
          </View>
          </CostomFormik>
        </KeyboardAwareScrollView>
-       {/* </GestureHandlerRootView> */}
-       </>
-       </ImageBackground>
   )
 }
 
-export default SignUpScreen
+export default AddtodoForm
 
 const styling = theme=>StyleSheet.create({
     mainCon: {
-      // backgroundColor:  Colors[theme]?.backgroundColor,
-      flex: 1,
-      height:screenHeight
+      // backgroundColor:  Colors["light"]?.backgroundColor,
+    //   flex: 1,
+    //   height:screenHeight
 
     },
     loginIcon: {
@@ -435,12 +361,12 @@ const styling = theme=>StyleSheet.create({
       justifyContent: 'space-between',
     },
     textInput: {
-      borderBottomColor:  Colors[theme]?.gray,
+      borderBottomColor:  Colors["light"]?.gray,
       borderWidth: 1,
       borderTopWidth: 0,
       borderLeftWidth: 0,
       borderRightWidth: 0,
-      color:  Colors[theme]?.black,
+      color:  Colors["light"]?.black,
       fontSize: 16,
       fontFamily: Fonts.type.NotoSansMedium,
       height: 40,
@@ -460,17 +386,17 @@ const styling = theme=>StyleSheet.create({
     LoginBtn: {
       backgroundColor:  "#1b394a",
       borderRadius: 20,
-      marginTop:20
+      marginTop:20,
     },
     loginBtnLbl: {
       textAlign: 'center',
       fontSize: 16,
       fontFamily: Fonts.type.NotoSansBlack,
-      color:  Colors[theme]?.white,
+      color:  Colors["light"]?.white,
       paddingVertical: 10,
     },
     devider: {
-      borderBottomColor:  Colors[theme]?.gray,
+      borderBottomColor:  Colors["light"]?.gray,
       borderBottomWidth: StyleSheet.hairlineWidth,
       marginTop: 20,
     },

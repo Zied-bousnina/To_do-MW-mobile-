@@ -135,10 +135,10 @@ const VerifyEmailScreen = () => {
   return (
     <ImageBackground
 
-    source={
-        require('../../assets/images1/pattern-randomized.png')
+    // source={
+    //     require('../../assets/images1/pattern-randomized.png')
+    // }
         // require('../../assets')
-    }
     style={{
       flex: 1,
       // backgroundColor: '#B52424', // Fallback color in case the image fails to load

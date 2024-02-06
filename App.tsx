@@ -6,8 +6,9 @@
  * @format
  */
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import type {PropsWithChildren} from 'react';
+import SplashScreen from 'react-native-splash-screen'
 import {
 
   StyleSheet,
@@ -23,9 +24,9 @@ import { LogBox } from 'react-native';
 import SignUpScreen from './src/screens/Auth/SignUpScreen';
 import VerifyEmailScreen from './src/screens/Auth/VerifyEmailScreen';
 import ForgotPasswordScreen from './src/screens/Auth/ForgotPasswordScreen';
+import Dashboard from './src/screens/dashboard/Dashboard';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
-
 
 
 type SectionProps = PropsWithChildren<{
@@ -35,10 +36,15 @@ type SectionProps = PropsWithChildren<{
 
 function App(): React.JSX.Element {
 
+  // useEffect(() => {
+  //   SplashScreen.hide();
+  // }, [])
+
 
   return (
     <SafeAreaProvider>
       <>
+      {/* <InternetDisconnected /> */}
       <NavigationContainer
 
 
@@ -52,6 +58,7 @@ function App(): React.JSX.Element {
         <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
           <Stack.Screen name="VerifyEmailScreen" component={VerifyEmailScreen}/>
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen name="Dashboard" component={Dashboard} />
         {/* Add other screens here if needed */}
       </Stack.Navigator>
         </NavigationContainer></>

@@ -146,6 +146,7 @@ const LoginScreen = () => {
     // dispatch(GetRequest())
     // console.log("eeeeeee:", error)
     // console.log("is Empty ----------:", isEmpty(error))
+      navigation.navigate('Dashboard')
     setTimeout(() => {
       if(!isEmpty(error)){
         // console.log("is Empty ----------:", isEmpty(error))
@@ -208,8 +209,8 @@ const LoginScreen = () => {
 
     source={
         require('../../assets/images1/pattern-randomized.png')
-        // require('../../assets')
     }
+        // require('../../assets')
     style={{
       flex: 1,
       backgroundColor: '#f1f1ec', // Fallback color in case the image fails to load

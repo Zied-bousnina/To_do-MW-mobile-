@@ -22,6 +22,7 @@ const LoginButton = ({ name, placeholder,style,errorStyle,loginBtnLbl,btnName, .
         alignItems: 'center',
         marginTop: 10,
         marginBottom: 10,
+        backgroundColor:"#023AE9",
         ...style
 
     }}
