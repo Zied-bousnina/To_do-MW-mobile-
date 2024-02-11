@@ -6,7 +6,7 @@
  * @format
  */
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import type {PropsWithChildren} from 'react';
 import SplashScreen from 'react-native-splash-screen'
 import {
@@ -25,6 +25,7 @@ import SignUpScreen from './src/screens/Auth/SignUpScreen';
 import VerifyEmailScreen from './src/screens/Auth/VerifyEmailScreen';
 import ForgotPasswordScreen from './src/screens/Auth/ForgotPasswordScreen';
 import Dashboard from './src/screens/dashboard/Dashboard';
+import { refreshAuthentication } from './utils/methods/auth';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
 
@@ -39,7 +40,10 @@ function App(): React.JSX.Element {
   // useEffect(() => {
   //   SplashScreen.hide();
   // }, [])
-
+  useLayoutEffect(() => {
+    //custom middleware function
+    // refreshAuthentication(dispatch,router,pathname);
+  }, []);
 
   return (
     <SafeAreaProvider>

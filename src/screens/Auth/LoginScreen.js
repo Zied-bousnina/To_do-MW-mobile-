@@ -25,6 +25,8 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import { Button } from 'react-native-paper';
+import { AuthService } from '../../../_services/auth.service';
+// import { *asReact } from 'react';
 const screenHeight = Dimensions.get('window').height;
 const initialValues = {
   email: '',
@@ -139,36 +141,31 @@ const LoginScreen = () => {
   const handleLogin = (values, formikActions) => {
     setisLoading(true)
     console.log(values);
-    // console.log(formikActions);
-    // dispatch(loginUser(values))
-    // dispatch(loginUser(values))
-    // dispatch(GetProfile())
-    // dispatch(GetRequest())
-    // console.log("eeeeeee:", error)
-    // console.log("is Empty ----------:", isEmpty(error))
-      navigation.navigate('Dashboard')
-    setTimeout(() => {
-      if(!isEmpty(error)){
-        // console.log("is Empty ----------:", isEmpty(error))
-        setisLoading(false)
-      }
-    }, 10000);
-
-    setTimeout(() => {
-
-
+    AuthService.login(values).then((res)=>  {
+      console.log(res)
       setisLoading(false)
+      if(res.status === 200){
+        console.log(res.data)
+        dispatch({type: 'LOGIN_SUCCESS', payload: res.data})
+        navigation.navigate('Home')
+      }
 
-     }, 10000);
+    }).catch(err=> {
+      console.log(err)
+      setisLoading(false)
+      dispatch({type: 'LOGIN_FAIL', payload: err})
 
+    }).finally(()=>{
+      setisLoading(false)
+      formikActions.resetForm()
 
-      // console.log(values, formikActions);
-      // formikActions.resetForm()
       formikActions.setSubmitting(false);
-      // if(user.isPrivateCompany && request.requestIsEmpty){
-      //   Alert.alert("you have to determine the request")
-      // }
+      formikActions.setErrors({});
+      formikActions.setTouched({});
+      formikActions.setStatus({});
 
+
+    })
 
   };
   const handleGoogleLogin = async() => {
@@ -220,7 +217,7 @@ const LoginScreen = () => {
     <>
 
     {/* {loading ? <EmailSent/> :null } */}
-    {isLoad? <AppLoader/> : null }
+    {isLoading? <AppLoader/> : null }
 
       <GestureHandlerRootView
       // ref={scrollViewRef}
