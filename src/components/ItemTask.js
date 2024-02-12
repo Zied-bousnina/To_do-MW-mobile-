@@ -85,27 +85,7 @@ const ListRequest = memo((data, key) => {
 
 export default ListRequest
 const styles = StyleSheet.create({
-  contentView: {
-    flex: 1,
-    height: 500,
-    backgroundColor: 'white',
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    marginVertical: 20,
-    backgroundColor: 'white',
-  },
-  subHeader: {
-    backgroundColor: '#2089dc',
-    color: 'white',
-    textAlign: 'center',
-    paddingVertical: 5,
-    marginBottom: 10,
-  },
+
   taskContainer: {
     backgroundColor: 'white',
     padding: 5,
@@ -122,38 +102,5 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
     elevation: 4,
   },
-  tags: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  tags2: {
-    flexDirection: 'row',
-    // justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  tags3: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-    padding:10,
-    marginRight:10
-  },
-  text: {
-    marginBottom: 6,
-    color:"#7c8483"
-  },
-  stats: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  date: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    color:"#7c8483"
-  },
+
 });

@@ -39,7 +39,7 @@ const CustomSidebarMenu = (props) => {
 
   }
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, top:20}}>
       {/*Top Large Image */}
       <ProfileSection/>
       <DrawerContentScrollView {...props}>

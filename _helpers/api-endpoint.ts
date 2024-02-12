@@ -15,6 +15,12 @@ export const ApiConfigs = {
 
     user:{
       getAllTask:"read",
+      addTask : "task",
+      deleteTask: "delete",
+      updateTask: "update",
+      getStatistique: "getStatistiqueByUser",
+      getTasksSortedBy :  "readWithSortBy"
+
     }
   },
 };

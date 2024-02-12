@@ -24,6 +24,7 @@ const theme = {
     ...DefaultTheme.colors,
     myOwnColor: '#BADA55',
   },
+
 };
 const RNRedux = () => (
     // <AntdProvider>

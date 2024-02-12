@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native';
 // import { AcceptedMission, Findfactures, GetMissions } from '../../../redux/actions/demandesActions';
 // import { GetProfile } from '../../../redux/actions/profile.actions';
 // import { findBasicInfoByUserId } from '../../../redux/actions/userActions';
@@ -25,6 +26,8 @@ const ProfileSection = () => {
 
 
   return (
+    <SafeAreaView>
+
     <View style={styles.userCard}>
         <View>
           <Image source={{ uri: profile?.avatar ?
@@ -44,6 +47,7 @@ const ProfileSection = () => {
         <Icon2 name="arrow-forward-ios" size={30} color="#999" />
         </TouchableOpacity>
       </View>
+    </SafeAreaView>
   )
 }
 

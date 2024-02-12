@@ -155,6 +155,7 @@ const SignUpScreen = () => {
 
   // ------------------End theme-----------------------
 
+  const [Errors, setErrors] = useState('')
   const handleSignUp = async (values, formikActions)=> {
 
     const { email, password, confirm, name } = values;
@@ -164,15 +165,28 @@ const SignUpScreen = () => {
     .then(res=>{
       console.log(res)
       setisLoading(false)
-      ToastAndroid
-      .showWithGravityAndOffset(
-        "User Registered Successfully",
-        ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50
-      );
-      navigation.navigate('Login')
+      if(res.success){
+        ToastAndroid
+        .showWithGravityAndOffset(
+          "User Registered Successfully",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+        navigation.navigate('Login')
+      }else {
+        setErrors(res.errors?.email)
+        ToastAndroid
+        .showWithGravityAndOffset(
+          "User Registration Failed",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
+      }
+
     })
     .catch(err=>{
       console.log(err)
@@ -486,6 +500,9 @@ style={{
 
              </View>
            </View>
+           {
+              Errors? <Text style={{color:"red"}}>{Errors}</Text> : null
+           }
 
            {/* <View style={SignUpStyle.loginCon}> */}
              {/* <LoginButton
