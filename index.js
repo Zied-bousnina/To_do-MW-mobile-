@@ -14,6 +14,7 @@ import {
   MD3LightTheme as DefaultTheme,
   // PaperProvider,
 } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
 const theme = {
   ...DefaultTheme,
   // Specify custom property
@@ -29,6 +30,11 @@ const RNRedux = () => (
 
 
       <Provider store = { store }>
+         <NavigationContainer
+
+
+>
+
        <PaperProvider
        theme={theme}
 
@@ -36,6 +42,7 @@ const RNRedux = () => (
 
         <App />
        </PaperProvider>
+</NavigationContainer>
       </Provider>
 
 

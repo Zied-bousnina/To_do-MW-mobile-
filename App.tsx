@@ -5,7 +5,7 @@
  *
  * @format
  */
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useLayoutEffect } from 'react';
 import type {PropsWithChildren} from 'react';
 import SplashScreen from 'react-native-splash-screen'
@@ -26,6 +26,8 @@ import VerifyEmailScreen from './src/screens/Auth/VerifyEmailScreen';
 import ForgotPasswordScreen from './src/screens/Auth/ForgotPasswordScreen';
 import Dashboard from './src/screens/dashboard/Dashboard';
 import { refreshAuthentication } from './utils/methods/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import CustomSidebarMenu from './src/screens/CustomSidebarMenu';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
 
@@ -36,37 +38,67 @@ type SectionProps = PropsWithChildren<{
 
 
 function App(): React.JSX.Element {
-
+  const dipatch = useDispatch();
+  const navigation = useNavigation();
+const auth = useSelector(state => state?.auth);
+console.log('auth', auth);
   // useEffect(() => {
   //   SplashScreen.hide();
   // }, [])
   useLayoutEffect(() => {
     //custom middleware function
     // refreshAuthentication(dispatch,router,pathname);
+    refreshAuthentication(dipatch, navigation)
   }, []);
 
   return (
     <SafeAreaProvider>
-      <>
+
       {/* <InternetDisconnected /> */}
-      <NavigationContainer
+{
+  auth?.isConnected ?
+  <Drawer.Navigator
+  screenOptions={{
+   headerShown: false,
+   activeTintColor: '#e91e63',
+ }}
+ //  initialRouteName="Login"
+  drawerContent={props => <CustomSidebarMenu {...props} />}
+  >
 
 
-      >
-      <Stack.Navigator
-       screenOptions={{
-        headerShown: false,
-      }}
-       initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-          <Stack.Screen name="VerifyEmailScreen" component={VerifyEmailScreen}/>
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="Dashboard" component={Dashboard} />
-        {/* Add other screens here if needed */}
-      </Stack.Navigator>
-        </NavigationContainer></>
-    </SafeAreaProvider>
+     <Drawer.Screen name="Dashboard"   options={{
+   drawerLabel: () => null, // Hide the label
+   drawerItemStyle: { display: 'none' }, // Hide the item
+   // header:"  Header",
+ }} component={Dashboard} />
+   {/* Add other screens here if needed */}
+ </Drawer.Navigator>
+ :
+ <Stack.Navigator
+ screenOptions={{
+  headerShown: false,
+  // activeTintColor: '#e91e63',
+}}
+
+ >
+
+  <Stack.Screen name="Login" component={LoginScreen} />
+  <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+    <Stack.Screen name="VerifyEmailScreen" component={VerifyEmailScreen}/>
+    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+
+    <Drawer.Screen name="Dashboard"   options={{
+  drawerLabel: () => null, // Hide the label
+  drawerItemStyle: { display: 'none' }, // Hide the item
+  // header:"  Header",
+}} component={Dashboard} />
+  {/* Add other screens here if needed */}
+</Stack.Navigator>
+}
+
+
+     </SafeAreaProvider>
   );
 }
 

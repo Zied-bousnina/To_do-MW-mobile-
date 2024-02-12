@@ -1,46 +1,80 @@
-import {guestHeader, ApiConfigs } from "../_helpers";
+/* eslint-disable prettier/prettier */
+import { guestHeader, ApiConfigs } from "../_helpers";
 
-export const  AuthService =  {
-    regiterUser,
-    login
+export const AuthService = {
+  regiterUser,
+  login,
 };
 
 async function regiterUser(userData) {
-    const requestOptions = {
-        method: "POST",
-        headers: { ...guestHeader(), "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
-      };
-      return await fetch(
-        Apiconfigs.base_url+ ApiConfigs.apis.auth.user.register,
-        requestOptions
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      ...guestHeader(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userData),
+  };
 
-      ).then(handleResponse)
+  try {
+    const response = await fetch(
+      `${ApiConfigs.base_url}${ApiConfigs.apis.auth.user.register}`,
+      requestOptions
+    );
+    console.log("response-------------------------", response);
+    const data = await handleResponse(response);
+    return data;
+  } catch (error) {
+    // Handle error appropriately
+    console.error("Registration error:", error);
+    throw error;
+  }
 }
 
 async function login(userData) {
-    const requestOptions = {
-      method: "POST",
-      headers: { ...guestHeader(), "Content-Type": "application/json" },
-      body: JSON.stringify(userData),
-    };
-    return await fetch(
-      `${ApiConfigs.base_url + ApiConfigs.apis.auth.login}`,
-      requestOptions
-    ).then(handleResponse);
-  }
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      ...guestHeader(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userData),
+  };
 
-  function handleResponse(response) {
-    return response.text().then((text) => {
-      const data = text && JSON.parse(text);
-      if (!response.ok) {
-        if (response.status === 401) {
-          window.location.href = "/login";
-        }
-        const error = (data && data.message) || response.statusText;
-        return Promise.reject(error);
+  try {
+    const response = await fetch(
+      `${ApiConfigs.base_url}${ApiConfigs.apis.auth.login}`,
+      requestOptions
+    );
+    const data = await handleResponse(response);
+    return data;
+  } catch (error) {
+    // Handle error appropriately
+    console.error("Login error:", error);
+    throw error;
+  }
+}
+
+async function handleResponse(response) {
+  try {
+    const text = await response.text();
+    const data = text && JSON.parse(text);
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Redirect or handle unauthorized access
+        // Example: navigation.navigate('Login');
+        console.log("Unauthorized access, redirecting...");
       }
 
-      return data;
-    });
+      const error = (data && data.message) || response.statusText;
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    // Handle JSON parsing errors or other unexpected issues
+    console.error("Response handling error:", error);
+    throw error;
   }
+}

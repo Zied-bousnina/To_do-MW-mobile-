@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { View, Text, Dimensions, Animated, useColorScheme, StyleSheet, Pressable, ImageBackground } from 'react-native'
-import React, { useState, useRef, useCallback, useEffect} from 'react';
+import React, { useState, useRef, useCallback, useEffect, useLayoutEffect} from 'react';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +26,10 @@ import {
 } from '@react-native-google-signin/google-signin';
 import { Button } from 'react-native-paper';
 import { AuthService } from '../../../_services/auth.service';
+import { SET_USER } from '../../redux/types';
+import { login } from '../../redux/actions/auth.actions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { refreshAuthentication } from '../../../utils/methods/auth';
 // import { *asReact } from 'react';
 const screenHeight = Dimensions.get('window').height;
 const initialValues = {
@@ -51,6 +55,7 @@ GoogleSignin.configure({
 });
 const LoginScreen = () => {
 
+
   const [show, setshow] = useState(false);
   const lineAnimation = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
@@ -68,7 +73,12 @@ const LoginScreen = () => {
   const user = useSelector(state=>state?.auth?.user)
   const request = useSelector(state=>state?.request)
   const isLoad = useSelector(state=>state?.isLoading?.isLoading)
-
+const [errors, setErrors] = useState('')
+useLayoutEffect(() => {
+  //custom middleware function
+  // refreshAuthentication(dispatch,router,pathname);
+  refreshAuthentication(dispatch, navigation)
+}, []);
   // -------------------Theme Operations-----------------------------
   const themeOperations = theme => {
     switch (theme) {
@@ -139,21 +149,29 @@ const LoginScreen = () => {
   };
 
   const handleLogin = (values, formikActions) => {
+    setErrors('')
     setisLoading(true)
     console.log(values);
     AuthService.login(values).then((res)=>  {
-      console.log(res)
+      console.log(res.success)
       setisLoading(false)
-      if(res.status === 200){
+      if(res.success){
         console.log(res.data)
-        dispatch({type: 'LOGIN_SUCCESS', payload: res.data})
-        navigation.navigate('Home')
+        // dispatch({type: SET_USER, payload: res.data})
+        AsyncStorage.setItem("user", res.data.token);
+        dispatch(login(res.data, dispatch))
+
+        navigation.navigate('Dashboard')
+        setErrors('')
+
       }
 
     }).catch(err=> {
       console.log(err)
       setisLoading(false)
       dispatch({type: 'LOGIN_FAIL', payload: err})
+      setErrors(err)
+
 
     }).finally(()=>{
       setisLoading(false)
@@ -318,7 +336,12 @@ const LoginScreen = () => {
                 </View>
               </View>
             </View>
-
+            {
+              errors &&
+            <View style={LoginStyle.loginLblCon}>
+            <Text style={LoginStyle.error}>{errors}</Text>
+            </View>
+            }
             <View style={LoginStyle.forgotAction}>
   <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
     <Text style={LoginStyle.forgotLbl}>Forgot Your Password</Text>
@@ -472,6 +495,7 @@ StyleSheet.create({
   loginLblCon: {
     position: 'relative',
     bottom: 40,
+    top: 10,
   },
   socialButtonsContainer: {
     flexDirection: 'row',

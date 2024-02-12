@@ -7,6 +7,7 @@ import {
   Dimensions,
   useColorScheme,
   StyleSheet,
+  ToastAndroid,
 
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +29,9 @@ const initialValues = {
     email: '',
     password: '',
     confirm: '',
-    name:''
+    name:'',
+    first_name:'',
+    phone:''
   };
   const validationSchema = yup.object({
 
@@ -36,11 +39,22 @@ const initialValues = {
       .string()
       .trim()
       .required('Name is required'),
+    first_name: yup
+      .string()
+      .trim()
+      .required('First name is required'),
     email: yup
       .string()
       .trim()
       .email('Please enter a valid email address')
       .required('Email address is required'),
+    phone: yup
+      .string()
+      .trim()
+      .min(8, 'Phone number is too short!')
+      .max(11, 'Phone number is too long!')
+      .matches(/^[0-9]+$/, 'Must be only digits')
+      .required('Phone number is required'),
     password: yup.string().trim().min(6, 'password is too short!').required('Password is required'),
     confirm: yup.string()
     .oneOf([yup.ref('password'), null], 'Passwords must match')
@@ -53,8 +67,13 @@ import LockIcon from '../../components/svg/LockIcon';
 import ShowIcon from '../../components/svg/ShowIcon';
 import LoginButton from '../../components/Buttons/LoginButton';
 // import { registerUser } from '../../redux/actions/authActions';
-import { Button } from 'react-native-paper';
+import { Button, IconButton } from 'react-native-paper';
 import { ImageBackground } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import LOGOwhite from '../../components/svg/LOGOwhite';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
+import SignUpButton from '../../components/Buttons/SignUpButton';
+import { AuthService } from '../../../_services/auth.service';
 const SignUpScreen = () => {
 
     const [show, setshow] = useState(false);
@@ -65,7 +84,7 @@ const SignUpScreen = () => {
 
     const [isLoading, setisLoading] = useState(false)
 
-    showPasswordHandler = navigation => {
+    const showPasswordHandler = navigation => {
       setshow(!show);
       Animated.timing(lineAnimation, {
         toValue: show ? 0 : 20,
@@ -74,15 +93,6 @@ const SignUpScreen = () => {
       }).start();
     };
 
-    // useEffect(() => {
-    //     setTimeout(() => {
-
-
-    //       setisLoading(false)
-
-    //      }, 10000);
-
-    //   }, [])
 
       // ------------------ Theme ------------------
   const [themeValue, setThemeValue] = useState('');
@@ -146,13 +156,42 @@ const SignUpScreen = () => {
   // ------------------End theme-----------------------
 
   const handleSignUp = async (values, formikActions)=> {
-    setisLoading(true)
 
     const { email, password, confirm, name } = values;
-    console.log(values)
-    // dispatch(formikActions.signUp(email, password, confirm, name));
-    // console.log(formikActions.signUp(email, password, confirm, name))
-    // dispatch(registerUser({...values, firstLogin:false}, navigation))
+
+ setisLoading(true)
+    AuthService.regiterUser(values)
+    .then(res=>{
+      console.log(res)
+      setisLoading(false)
+      ToastAndroid
+      .showWithGravityAndOffset(
+        "User Registered Successfully",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
+      navigation.navigate('Login')
+    })
+    .catch(err=>{
+      console.log(err)
+      setisLoading(false)
+      ToastAndroid
+      .showWithGravityAndOffset(
+        "User Registration Failed",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
+    })
+    .finally(()=>{
+      setisLoading(false)
+      formikActions.setSubmitting(false)
+    })
+
+
     setTimeout(() => {
 
 
@@ -173,9 +212,9 @@ const SignUpScreen = () => {
   return (
     <ImageBackground
 
-    // source={
-    //     require('../../assets/images1/pattern-randomized.png')
-    // }
+    source={
+        require('../../assets/images1/pattern-randomized.png')
+    }
         // require('../../assets')
     style={{
       flex: 1,
@@ -198,64 +237,89 @@ const SignUpScreen = () => {
 
 
      <KeyboardAwareScrollView behavior="position" style={SignUpStyle.mainCon}>
-     <View style={{padding: 20}}>
 
+     <LinearGradient
+  start={{x: 0.0, y: 0.4}}
+  end={{x: 0.5, y: 1.0}}
+  location={[0, 1]}
+  colors={['#2D97DA', '#2249D6']}
+  style={{
+    flex: 0.8,
+    flexDirection: 'column',
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+  }}
+>
+  <ImageBackground
+    source={require('../../assets/images/image3background_register.png')}
+    style={{
+      flex: 1,
+      flexDirection: 'column',
+      paddingHorizontal: '2%',
+    }}
+  >
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      {/* Your content here */}
+    </View>
 
-          <Button
-          mode='contained'
-          onPress={()=>navigation.goBack()}
-          icon="keyboard-return"
-          style={{ borderRadius: 20, width: 50, height: 50, justifyContent: 'center', alignItems: 'center'}}
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    // marginTop: hp('7%'),
+    marginBottom: hp('5%'),
+     }}>
 
-          >
-            {/* <SvgIcon icon={'back'} width={30} height={30} /> */}
+      <View style={{ flexDirection: 'column' }}>
+        <Text style={{ color: '#fff', fontSize: 28, fontFamily: 'Roboto-Bold' }}>
+          <IconButton icon="sort-variant" iconColor={"transparent"} size={30} onPress={() => {}} />
+        </Text>
+        {/* <Text style={{color:'rgba(255,255,255,0.3)',fontFamily:'Roboto-Regular-Italic',fontSize:14}} >Updated 2 mins ago</Text> */}
+      </View>
 
-          </Button>
-        </View>
-         <View style={SignUpStyle.loginIcon}>
-           {/* <SvgIcon icon={'signup'} width={300} height={300} /> */}
-           <Logo
-                     width={Dimensions.get('window').width*0.6}
-                     height={Dimensions.get('window').height*0.3}
-                     />
+      {/* profit loss indicator */}
+      <LOGOwhite
+        width={Dimensions.get('window').width * 0.15}
+        height={Dimensions.get('window').height * 0.15}
+      />
+      <IconButton
+        icon="arrow-left"
+        iconColor={"white"}
+        size={30}
+        onPress={() => {
+          // setwhoIsClicked("add")
+          // sheetRef.current.open()
+          navigation.navigate('Login')
+        }}
+      />
+    </View>
+  </ImageBackground>
+</LinearGradient>
 
-         </View>
          <CostomFormik
            initialValues={initialValues}
            validationSchema={validationSchema}
            onSubmit={handleSignUp}
              >
 
-         <View style={SignUpStyle.container}>
+         <View style={[SignUpStyle.container ]}>
            <View style={SignUpStyle.loginLblCon}>
-             <Text style={SignUpStyle.loginLbl}>Sign up</Text>
+             <Text style={SignUpStyle.loginLbl}>CREATE AN ACCOUNT</Text>
            </View>
-           <View style={SignUpStyle.formCon}>
-             <View style={SignUpStyle.textBoxCon}>
-               <View style={SignUpStyle.at}>
-                 <AtSVG
-                   width={20}
-                   height={20}
-                 />
+           <View style={[SignUpStyle.formCon,{marginTop:2}]}>
 
-               </View>
+{/* Name */}
+             <View style={[SignUpStyle.textBoxCon, ]}>
+
                <View style={SignUpStyle.textCon}>
-                 <AppInput
-                   name="email"
-                   placeholder="Email ID"
-                   style={SignUpStyle.textInput}
-                   placeholderTextColor={'#aaa'}
-                 />
-               </View>
-             </View>
-             <View style={[SignUpStyle.textBoxCon, {marginTop: 30}]}>
-               <View style={SignUpStyle.at}>
-                 <UserSVg
-                   width={20}
-                   height={20}
-                 />
-               </View>
-               <View style={SignUpStyle.textCon}>
+               <Text
+style={{
+ color: "#1E293B",
+ fontFamily: Fonts.type.NotoSansMedium,
+ fontSize: 18,
+ marginLeft:8,
+
+}}
+>
+  Name
+</Text>
                  <AppInput
                    name="name"
                    placeholder="Full Name"
@@ -264,13 +328,89 @@ const SignUpScreen = () => {
                  />
                </View>
              </View>
+             <View style={[SignUpStyle.textBoxCon,{marginTop: 10} ]}>
 
-             <View style={[SignUpStyle.textBoxCon, {marginTop: 30}]}>
-               <View style={SignUpStyle.at}>
-                 <LockIcon width={20} height={20} />
-               </View>
+<View style={SignUpStyle.textCon}>
+<Text
+style={{
+color: "#1E293B",
+fontFamily: Fonts.type.NotoSansMedium,
+fontSize: 18,
+marginLeft:8,
+
+}}
+>
+First name
+</Text>
+  <AppInput
+    name="first_name"
+    placeholder="first name"
+    style={SignUpStyle.textInput}
+    placeholderTextColor={'#aaa'}
+  />
+</View>
+</View>
+             <View style={[SignUpStyle.textBoxCon, {marginTop: 10}]}>
+
+<View style={SignUpStyle.textCon}>
+<Text
+style={{
+ color: "#1E293B",
+ fontFamily: Fonts.type.NotoSansMedium,
+ fontSize: 18,
+ marginLeft:8,
+
+}}
+>
+  E-mail
+</Text>
+  <AppInput
+    name="email"
+    placeholder="Email ID"
+    style={SignUpStyle.textInput}
+    placeholderTextColor={'#aaa'}
+  />
+</View>
+</View>
+           <View style={[SignUpStyle.textBoxCon, {marginTop: 10}]}>
+
+<View style={SignUpStyle.textCon}>
+<Text
+style={{
+ color: "#1E293B",
+ fontFamily: Fonts.type.NotoSansMedium,
+ fontSize: 18,
+ marginLeft:8,
+
+}}
+>
+  Phonet
+</Text>
+  <AppInput
+    name="phone"
+    placeholder="phone"
+    style={SignUpStyle.textInput}
+    placeholderTextColor={'#aaa'}
+    type="number"
+  />
+</View>
+</View>
+
+             <View style={[SignUpStyle.textBoxCon, {marginTop: 10}]}>
+
                <View style={[SignUpStyle.passCon]}>
                  <View style={SignUpStyle.textCon}>
+                 <Text
+style={{
+ color: "#1E293B",
+ fontFamily: Fonts.type.NotoSansMedium,
+ fontSize: 18,
+ marginLeft:8,
+
+}}
+>
+ Password
+</Text>
                    <AppInput
                      name="password"
                      placeholder="Password"
@@ -299,12 +439,21 @@ const SignUpScreen = () => {
                  </View>
                </View>
              </View>
-             <View style={[SignUpStyle.textBoxCon, {marginTop: 30}]}>
-               <View style={SignUpStyle.at}>
-                 <LockIcon width={20} height={20} />
-               </View>
+             <View style={[SignUpStyle.textBoxCon, {marginTop: 10}]}>
+
                <View style={[SignUpStyle.passCon]}>
                  <View style={SignUpStyle.textCon}>
+                 <Text
+style={{
+ color: "#1E293B",
+ fontFamily: Fonts.type.NotoSansMedium,
+ fontSize: 18,
+ marginLeft:8,
+
+}}
+>
+  Confirm password
+</Text>
                    <AppInput
                      name="confirm"
                      placeholder="Confirm Password"
@@ -334,30 +483,51 @@ const SignUpScreen = () => {
                </View>
              </View>
              <View style={SignUpStyle.termsCon}>
-               {/* <Text style={SignUpStyle.termsBy}>
-                 By signing up, you're agree to our{' '}
-               </Text>
-               <Pressable
-                 onPress={() =>navigation.navigate('SignUpScreen')}>
-                 <Text style={SignUpStyle.termLbl}>Terms & Conditions </Text>
-               </Pressable>
-               <Text style={SignUpStyle.termsBy}> and </Text>
-               <Pressable
-                 onPress={() => navigation.navigate('SignUpScreen')}>
-                 <Text style={SignUpStyle.termLbl}>Privacy Policy</Text>
-               </Pressable> */}
+
              </View>
            </View>
 
-           <View style={SignUpStyle.loginCon}>
-             <LoginButton
+           {/* <View style={SignUpStyle.loginCon}> */}
+             {/* <LoginButton
                style={SignUpStyle.LoginBtn}
                loginBtnLbl={SignUpStyle.loginBtnLbl}
                btnName={"Register"}
-             />
-           </View>
+             /> */}
+             <View style={SignUpStyle.socialButtonsContainer}>
+  <View style={[SignUpStyle.socialButton, {marginRight:25, marginLeft:-20}]}>
+    {/* <GoogleSvg width={20} height={20} /> */}
+    <Pressable
+    onPress={()=>navigation.navigate('Login')}
+    >
+      <Text style={SignUpStyle.socialButtonLabel}> Cancel</Text>
+    </Pressable>
+  </View>
+  <View style={SignUpStyle.socialButtonsContainer}>
 
-           <View style={SignUpStyle.registerCon}>
+    <View style={[SignUpStyle.socialButton, {
+       backgroundColor:"#023AE9",
+       marginRight:0,
+       marginTop:-10,
+        marginLeft:-10,
+    }]}>
+
+<SignUpButton
+
+btnName={"Create"}
+style={{
+  backgroundColor:"#023AE9",
+
+
+}}
+
+/>
+    </View>
+    </View>
+
+</View>
+           {/* </View> */}
+
+           {/* <View style={SignUpStyle.registerCon}>
              <Text style={SignUpStyle.registerNew}>Joined us before? </Text>
              <Pressable
                onPress={() => navigation.navigate('Login')}
@@ -365,7 +535,7 @@ const SignUpScreen = () => {
                <Text style={SignUpStyle.registerLbl}>Login</Text>
              </Pressable>
 
-           </View>
+           </View> */}
          </View>
          </CostomFormik>
        </KeyboardAwareScrollView>
@@ -378,6 +548,31 @@ const SignUpScreen = () => {
 export default SignUpScreen
 
 const styling = theme=>StyleSheet.create({
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 20, // Add some margin if needed
+    marginTop: 10, // Adjust as needed,
+    marginBottom: 20,
+  },
+  socialButton: {
+    flexDirection: 'row',
+    backgroundColor: "white",
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 8,
+    paddingHorizontal: 40, // Adjust the padding as needed
+    borderWidth:0.5,
+    borderColor: "#708090",
+    height: 45,
+  },
+
+  socialButtonLabel: {
+    color: "black",
+    textAlign: 'center',
+    paddingHorizontal: 10, // Adjust the padding as needed
+    // fontFamily: Fonts.type.NotoSansBlack,
+  },
     mainCon: {
       // backgroundColor:  Colors[theme]?.backgroundColor,
       flex: 1,
@@ -403,8 +598,8 @@ const styling = theme=>StyleSheet.create({
       bottom: 40,
     },
     loginLbl: {
-      color: "#022d26" ,
-      fontSize: 32,
+      color: "white" ,
+      fontSize: 20,
       fontFamily: Fonts.type.NotoSansExtraBold,
       alignItems: 'center',
       justifyContent: 'center',
@@ -420,30 +615,37 @@ const styling = theme=>StyleSheet.create({
       alignSelf: 'center',
       width: '10%',
       position: 'relative',
-      right: 20,
+      right: 30,
       zIndex: 10,
+      top:17,
     },
     textBoxCon: {
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
     textCon: {
-      width: '90%',
+      width: Dimensions.get("screen").width*0.9,
     },
     passCon: {
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
     textInput: {
-      borderBottomColor:  Colors[theme]?.gray,
-      borderWidth: 1,
-      borderTopWidth: 0,
-      borderLeftWidth: 0,
-      borderRightWidth: 0,
-      color:  Colors[theme]?.black,
+      borderBottomColor: Colors["light"]?.gray,
+      borderWidth: 0.5,
+      // borderTopWidth: 0,
+      // borderLeftWidth: 0,
+      // borderRightWidth: 0,
+      color: Colors["light"]?.black,
       fontSize: 16,
       fontFamily: Fonts.type.NotoSansMedium,
       height: 40,
+      borderRadius: 8,
+      backgroundColor:"#ffffff",
+      paddingHorizontal: 10,
+      marginTop:10
+
+      // backgroundColor: "#ffffff",
     },
     forgotAction: {
       paddingVertical: 20,

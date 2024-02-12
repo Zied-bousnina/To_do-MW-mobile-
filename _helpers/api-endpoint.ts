@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 function server() {
-  return "http://192.168.1.16:8000/api/";}
+  return "https://mdw-backend-todo.vercel.app/api/api/";}
 
 export const ApiConfigs = {
   base_url: server(),
@@ -7,12 +8,13 @@ export const ApiConfigs = {
 
   apis: {
     auth: {
-      user: { register: "users" },
+      user: { register: "user/create" },
       login: "user/login",
+      currentUserLogin: "user",
     },
 
     user:{
-      getCurrentAccessList:"users/access/getCurrentAccessList",
+      getAllTask:"read",
     }
   },
 };

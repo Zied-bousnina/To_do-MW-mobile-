@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React , { useMemo, useRef, useState } from 'react'
+import React , { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {Text,View,StyleSheet,Image,TouchableOpacity,StatusBar,ScrollView, Touchable, FlatList, Dimensions, Pressable} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import {dummyData} from '../../constants'
+
 import { ProfitIndicator,ActionCenter } from '../../components'
-import { IconButton, RadioButton } from 'react-native-paper'
+import { ActivityIndicator, Drawer, IconButton, RadioButton } from 'react-native-paper'
 import { Icon as IconPaper, MD3Colors } from 'react-native-paper';
 import Logo from '../../components/svg/LOGO'
 import LOGOwhite from '../../components/svg/LOGOwhite'
@@ -18,6 +18,13 @@ import CostomFormik from '../../components/costomFormik/CostomFormik'
 import Fonts from '../../../src/assets/fonts';
 import AppInput from '../../components/Inputs/AppInput'
 import { Colors } from '../../theme'
+import { useSelector } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useNavigation } from '@react-navigation/native'
+import { UserService } from '../../../_services/user.service'
+import AppLoader from '../../components/Animations/AppLoader'
+import { FlashList } from "@shopify/flash-list";
+import ItemList from '../../components/ItemTask'
 const initialValues = {
     email: '',
     password: '',
@@ -39,6 +46,21 @@ const Dashboard = () =>{
     const [checked, setChecked] = React.useState('first');
     const sheetRef = useRef(null);
     const [whoIsClicked, setwhoIsClicked] = useState("add")
+    const [active, setActive] = React.useState('');
+    const user = useSelector(state=>state?.auth)
+    const [AllTasks, setAllTasks] = useState([])
+    const [IsloadingList, setIsloadingList] = useState(false)
+
+    AsyncStorage.getItem('user')
+    .then(value => {
+      if (value) {
+       console.log("token from dashboard : ", value);
+      }
+    })
+    .catch(err => {
+    });
+
+    console.log("user from dashboard : ", user);
     const handleLogin = (values, formikActions) => {
 
           formikActions.setSubmitting(false);
@@ -46,10 +68,72 @@ const Dashboard = () =>{
 
 
       };
+
+const getTaskLis = async () => {
+  setIsloadingList(true)
+UserService.getTaskList().
+then((res) => {
+  const parsedRes = JSON.parse(res);
+  console.log("res from getTaskList : ", parsedRes?.tasks);
+  console.log("Type of res: ", typeof res);
+
+  setAllTasks(parsedRes?.tasks)
+  setIsloadingList(false)
+
+})
+.catch((err) => {
+  // console.log("err from getTaskList : ", err);
+  setIsloadingList(false)
+
+})
+.finally(() => {
+  setIsloadingList(false)
+})
+
+}
+
+useEffect(() => {
+
+ getTaskLis()
+}, [])
+const keyExtractor = useCallback((item, i)=> `${i}-${item._id}`,[]);
+const renderLoader = () => {
+  return  5* PAGE_LIMIT < AllTasks?.length ? (
+
+    <View
+      style={{
+        // flex: 1,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // marginButtom: 30,
+      }}
+    >
+      <ActivityIndicator size="large" color="red" />
+    </View>
+  ) : null;
+};
+const PAGE_LIMIT = 5;
+const getItemLayout = (data, index) => (
+  {length: PAGE_LIMIT, offset: PAGE_LIMIT * index, index}
+)
+console.log("_____________________",AllTasks)
+      const navigation = useNavigation()
     return (
 
         <View style={{flex:1}} >
-        {/* <AppLoader/> */}
+       {IsloadingList&& <AppLoader/>}
+        {/* <Drawer.Section title="Some title">
+      <Drawer.Item
+        label="First Item"
+        active={active === 'first'}
+        onPress={() => setActive('first')}
+      />
+      <Drawer.Item
+        label="Second Item"
+        active={active === 'second'}
+        onPress={() => setActive('second')}
+      />
+    </Drawer.Section> */}
 
             {/* Statusbar */}
             <StatusBar barStyle='light-content' translucent={true} backgroundColor='transparent' />
@@ -71,7 +155,7 @@ const Dashboard = () =>{
       icon="sort-variant"
       iconColor={"white"}
       size={30}
-      onPress={() => console.log('Pressed')}
+      onPress={() => navigation.openDrawer()}
     /></Text>
                             {/* <Text style={{color:'rgba(255,255,255,0.3)',fontFamily:'Roboto-Regular-Italic',fontSize:14}} >Updated 2 mins ago</Text> */}
                         </View>
@@ -159,41 +243,43 @@ const Dashboard = () =>{
 
 
                     {/* coin list */}
-                    <FlatList
-                        keyExtractor={(item)=>item.id}
-                        data={dummyData.coins}
-                        renderItem={({item})=>(
-                            <View style={{flexDirection:'row',height:hp('10%'),width:'100%',borderWidth:1,borderColor:'#ddd',borderRadius:15,justifyContent:'space-between',paddingRight:10,marginBottom:10}} >
-                                {/* Coin image ,coin name and symbol */}
-                                <View style={{flexDirection:'row',alignItems:'center'}} >
-                                    {/* Coin image */}
-                                    <Image style={{height:'65%'}} resizeMode="contain" source={item.image} />
+                    <FlashList
+              showsVerticalScrollIndicator={true}
 
-                                    {/* Coin symbol */}
-                                    <View style={{flexDirection:'column',justifyContent:'flex-start'}} >
-                                        <Text style={{fontFamily:'Roboto-Medium',color:'#333',fontSize:20}} >{item.currency}</Text>
-                                        <Text>BNB/USDT</Text>
-                                    </View>
-                                </View>
+        data={AllTasks}
+        renderItem={({ item }) => (
+          <ItemList
 
+          item={item}
+          />
+        )}
+        keyExtractor={keyExtractor}
+        ListFooterComponent={renderLoader}
+        // onEndReached={async () => await loadItemsEnd()}
+        getItemLayout={getItemLayout}
+        onEndReachedThreshold={0}
+        // style={{ marginBottom: 50 }}
+        contentContainerStyle={{
 
-                                {/* Coin price and indicator */}
-                                <View style={{flexDirection:'column',backgroundColor:'#fff',alignContent:'center',justifyContent:'center'}} >
-                                    {/* price */}
-                                    <Text style={{fontFamily:'Roboto-Medium',fontSize:14,color:'#333'}} >${item.amount}</Text>
+          // marginBottom: 50
+        }}
+        maxToRenderPerBatch={5}
+        removeClippedSubviews={true}
+        // windowSize={5}
+        initialNumToRender={5}
+        estimatedItemSize={
+          500
+        }
+        onRefresh={()=>{}
 
-                                    {/* indicator */}
-                                    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}} >
-                                        <Text style={{color: item.type =="I" ? 'green':'red',fontFamily:'Roboto-Bold',fontSize:12}} >{item.changes}</Text>
+        }
+        refreshing={
+          false
+          // isLoading
+        }
+        // inverted
 
-                                        <Icon name={item.type == "I" ? 'chevron-circle-up':'chevron-circle-down'} color={item.type == "I" ? 'green':'red'} />
-
-                                    </View>
-                                </View>
-
-                            </View>
-                        )}
-                    />
+      />
 
                 </View>
 

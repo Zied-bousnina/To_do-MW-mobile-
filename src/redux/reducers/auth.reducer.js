@@ -20,7 +20,7 @@ export default function(state = initialState, action) {
                 isConnected: !isEmpty(action.payload),
                 user: action.payload,
                 isLoading: isEmpty(action.payload),
-                isVerified: action.payload?.verified,
+
                 isFirstTime : action.payload?.firstLogin
             }
             case SET_FIRST_LOGIN:
